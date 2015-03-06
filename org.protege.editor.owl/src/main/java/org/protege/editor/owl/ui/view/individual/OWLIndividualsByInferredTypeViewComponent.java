@@ -8,6 +8,7 @@ import org.protege.editor.owl.ui.tree.CountingOWLObjectTreeCellRenderer;
 import org.protege.editor.owl.ui.tree.OWLModelManagerTree;
 import org.protege.editor.owl.ui.tree.OWLObjectTree;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLObject;
 
@@ -68,8 +69,8 @@ public class OWLIndividualsByInferredTypeViewComponent extends AbstractOWLIndivi
         getOWLModelManager().addListener(managerListener);
 
         provider = new IndividualsByInferredTypeHierarchyProvider(getOWLModelManager().getOWLOntologyManager());
-        tree = new OWLModelManagerTree<OWLObject>(getOWLEditorKit(), provider);
-        tree.setCellRenderer(new CountingOWLObjectTreeCellRenderer<OWLObject>(getOWLEditorKit(), tree));
+        tree = new OWLModelManagerTree<>(getOWLEditorKit(), provider);
+        tree.setCellRenderer(new CountingOWLObjectTreeCellRenderer<>(getOWLEditorKit(), tree));
 
         add(new JScrollPane(tree));
 
@@ -83,7 +84,7 @@ public class OWLIndividualsByInferredTypeViewComponent extends AbstractOWLIndivi
     }
 
 
-    public OWLNamedIndividual updateView(OWLNamedIndividual selelectedIndividual) {
+    public OWLIndividual updateView(OWLIndividual selelectedIndividual) {
         OWLObject selObj = tree.getSelectedOWLObject();
         if (selelectedIndividual != null && selObj != null) {
             if (selelectedIndividual.equals(selObj)) {

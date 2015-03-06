@@ -20,17 +20,17 @@ import org.semanticweb.owlapi.model.OWLOntology;
  * Bio-Health Informatics Group<br>
  * Date: 27-Jan-2007<br><br>
  */
-public class OWLClassAssertionAxiomMembersSectionRow extends AbstractOWLFrameSectionRow<OWLClassExpression, OWLClassAssertionAxiom, OWLNamedIndividual> {
+public class OWLClassAssertionAxiomMembersSectionRow extends AbstractOWLFrameSectionRow<OWLClassExpression, OWLClassAssertionAxiom, OWLIndividual> {
 
     public OWLClassAssertionAxiomMembersSectionRow(OWLEditorKit owlEditorKit, 
-    											   OWLFrameSection<OWLClassExpression, OWLClassAssertionAxiom, OWLNamedIndividual> section,
+    											   OWLFrameSection<OWLClassExpression, OWLClassAssertionAxiom, OWLIndividual> section,
     											   OWLOntology ontology, OWLClassExpression rootObject,
     											   OWLClassAssertionAxiom axiom) {
         super(owlEditorKit, section, ontology, rootObject, axiom);
     }
 
 
-    protected OWLObjectEditor<OWLNamedIndividual> getObjectEditor() {
+    protected OWLObjectEditor<OWLIndividual> getObjectEditor() {
         return null;
     }
 
@@ -44,7 +44,7 @@ public class OWLClassAssertionAxiomMembersSectionRow extends AbstractOWLFrameSec
         return true;
     }
     
-    protected OWLClassAssertionAxiom createAxiom(OWLNamedIndividual editedObject) {
+    protected OWLClassAssertionAxiom createAxiom(OWLIndividual editedObject) {
         return getOWLDataFactory().getOWLClassAssertionAxiom(getRoot(), editedObject);
     }
 

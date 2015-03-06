@@ -22,7 +22,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
   * Bio-Health Informatics Group<br>
   * Date: 29-Jan-2007<br><br>
   */
- public class OWLDifferentIndividualsAxiomFrameSection extends AbstractOWLFrameSection<OWLNamedIndividual, OWLDifferentIndividualsAxiom, Set<OWLNamedIndividual>> {
+ public class OWLDifferentIndividualsAxiomFrameSection extends AbstractOWLFrameSection<OWLIndividual, OWLDifferentIndividualsAxiom, Set<OWLIndividual>> {
 
     public static final String LABEL = "Different Individuals";
 
@@ -34,7 +34,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
     }
 
 
-    public OWLDifferentIndividualsAxiomFrameSection(OWLEditorKit editorKit, OWLFrame<? extends OWLNamedIndividual> frame) {
+    public OWLDifferentIndividualsAxiomFrameSection(OWLEditorKit editorKit, OWLFrame<? extends OWLIndividual> frame) {
         super(editorKit, LABEL, "Different individuals", frame);
     }
 
@@ -55,19 +55,19 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
     }
 
 
-    protected OWLDifferentIndividualsAxiom createAxiom(Set<OWLNamedIndividual> object) {
+    protected OWLDifferentIndividualsAxiom createAxiom(Set<OWLIndividual> object) {
         object.add(getRootObject());
         return getOWLDataFactory().getOWLDifferentIndividualsAxiom(object);
     }
 
 
-    public OWLObjectEditor<Set<OWLNamedIndividual>> getObjectEditor() {
+    public OWLObjectEditor<Set<OWLIndividual>> getObjectEditor() {
         return new OWLIndividualSetEditor(getOWLEditorKit());
     }
     
     @Override
-	public boolean checkEditorResults(OWLObjectEditor<Set<OWLNamedIndividual>> editor) {
-		Set<OWLNamedIndividual> equivalents = editor.getEditedObject();
+	public boolean checkEditorResults(OWLObjectEditor<Set<OWLIndividual>> editor) {
+		Set<OWLIndividual> equivalents = editor.getEditedObject();
 		return !equivalents.contains(getRootObject());
 	}
 
@@ -84,7 +84,7 @@ import org.semanticweb.owlapi.model.OWLOntologyChange;
      * @return A comparator if to sort the rows in this section,
      *         or <code>null</code> if the rows shouldn't be sorted.
      */
-    public Comparator<OWLFrameSectionRow<OWLNamedIndividual, OWLDifferentIndividualsAxiom, Set<OWLNamedIndividual>>> getRowComparator() {
+    public Comparator<OWLFrameSectionRow<OWLIndividual, OWLDifferentIndividualsAxiom, Set<OWLIndividual>>> getRowComparator() {
         return null;
     }
 }

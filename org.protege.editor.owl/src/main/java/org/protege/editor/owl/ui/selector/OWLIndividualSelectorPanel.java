@@ -7,6 +7,7 @@ import org.protege.editor.core.ui.workspace.Workspace;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.renderer.OWLSystemColors;
 import org.protege.editor.owl.ui.view.individual.OWLIndividualListViewComponent;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 
@@ -25,7 +26,7 @@ import java.util.Set;
  * www.cs.man.ac.uk/~horridgm<br>
  * <br>
  */
-public class OWLIndividualSelectorPanel extends AbstractSelectorPanel<OWLNamedIndividual> {
+public class OWLIndividualSelectorPanel extends AbstractSelectorPanel<OWLIndividual> {
 
     private OWLIndividualListViewComponent vc;
 
@@ -63,7 +64,7 @@ public class OWLIndividualSelectorPanel extends AbstractSelectorPanel<OWLNamedIn
         this.vc.setSelectionMode(selectionMode);
     }
 
-    public void setSelection(OWLNamedIndividual ind) {
+    public void setSelection(OWLIndividual ind) {
         if (vc.getView() != null) {
             vc.getView().setPinned(false);
         }
@@ -71,16 +72,16 @@ public class OWLIndividualSelectorPanel extends AbstractSelectorPanel<OWLNamedIn
     }
 
 
-    public void setSelection(Set<OWLNamedIndividual> entities) {
+    public void setSelection(Set<OWLIndividual> entities) {
         vc.setSelectedIndividuals(entities);
     }
 
 
-    public OWLNamedIndividual getSelectedObject() {
+    public OWLIndividual getSelectedObject() {
         return vc.getSelectedIndividual();
     }
 
-    public Set<OWLNamedIndividual> getSelectedObjects() {
+    public Set<OWLIndividual> getSelectedObjects() {
         return vc.getSelectedIndividuals();
     }
 

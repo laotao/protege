@@ -32,7 +32,7 @@ public class UsageByEntityTreeModel extends DefaultTreeModel implements UsageTre
 
     private Map<OWLEntity, DefaultMutableTreeNode> nodeMap;
 
-    private OWLEntity entity;
+    private OWLObject entity;
 
     private Map<OWLEntity, Set<OWLAxiom>> axiomsByEntityMap;
 
@@ -57,21 +57,30 @@ public class UsageByEntityTreeModel extends DefaultTreeModel implements UsageTre
         setOWLEntity(entity);
     }
 
-    private String getRootContent(OWLModelManager mngr, OWLEntity entity){
+    private String getRootContent(OWLModelManager mngr, OWLObject entity){
         return entity != null ? "Found " + usageCount + " uses of " + mngr.getRendering(entity) : "";
     }
 
-    public void setOWLEntity(OWLEntity owlEntity) {
-    	if (owlEntity == null) {
+    public void setOWLEntity(OWLObject object) {
+    	if (object == null) {
     		return;
     	}
-        this.entity = owlEntity;
+        this.entity = object;
         axiomsByEntityMap.clear();
         usageCount = 0;
 
         for (OWLOntology ont : owlModelManager.getActiveOntologies()) {
             currentOntology = ont;
-            Set<OWLAxiom> axioms = ont.getReferencingAxioms(owlEntity);
+            Set<OWLAxiom> axioms;
+            if(entity instanceof OWLEntity) {
+                axioms = ont.getReferencingAxioms((OWLEntity) object);
+            }
+            else if(entity instanceof OWLAnonymousIndividual) {
+                axioms = ont.getReferencingAxioms((OWLAnonymousIndividual) object);
+            }
+            else {
+                axioms = Collections.emptySet();
+            }
             for (OWLAxiom ax : axioms) {
                 axiomSorter.setAxiom(ax);
                 ax.accept(axiomSorter);

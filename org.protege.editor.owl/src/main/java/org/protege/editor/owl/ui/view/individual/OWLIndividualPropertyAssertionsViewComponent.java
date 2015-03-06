@@ -26,7 +26,7 @@ public class OWLIndividualPropertyAssertionsViewComponent extends AbstractOWLInd
 
 
     public void initialiseIndividualsView() throws Exception {
-        list = new OWLFrameList<OWLIndividual>(getOWLEditorKit(),
+        list = new OWLFrameList<>(getOWLEditorKit(),
                                                 new OWLIndividualPropertyAssertionsFrame(getOWLEditorKit()));
         setLayout(new BorderLayout());
         add(new JScrollPane(list));
@@ -41,7 +41,7 @@ public class OWLIndividualPropertyAssertionsViewComponent extends AbstractOWLInd
     }
 
 
-    public OWLNamedIndividual updateView(OWLNamedIndividual selelectedIndividual) {
+    public OWLIndividual updateView(OWLIndividual selelectedIndividual) {
         list.setRootObject(selelectedIndividual);
         return selelectedIndividual;
     }

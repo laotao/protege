@@ -59,7 +59,6 @@ public interface OWLSelectionModel {
      */
     public OWLNamedIndividual getLastSelectedIndividual();
 
-
     /**
      * Gets the most recently selected datatype.
      * @return The selected datatype, or <code>null</code> if

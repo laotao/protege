@@ -4,6 +4,7 @@ import org.protege.editor.core.ui.util.InputVerificationStatusChangedListener;
 import org.protege.editor.core.ui.util.VerifiedInputEditor;
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.selector.OWLIndividualSelectorPanel;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 
 import javax.swing.*;
@@ -18,7 +19,7 @@ import java.util.Set;
  * Bio-Health Informatics Group<br>
  * Date: 22-Feb-2007<br><br>
  */
-public class OWLIndividualSetEditor extends AbstractOWLObjectEditor<Set<OWLNamedIndividual>>  implements VerifiedInputEditor  {
+public class OWLIndividualSetEditor extends AbstractOWLObjectEditor<Set<OWLIndividual>>  implements VerifiedInputEditor  {
 
     private OWLIndividualSelectorPanel panel;
 
@@ -36,12 +37,12 @@ public class OWLIndividualSetEditor extends AbstractOWLObjectEditor<Set<OWLNamed
     }
 
 
-    public Set<OWLNamedIndividual> getEditedObject() {
+    public Set<OWLIndividual> getEditedObject() {
         return panel.getSelectedObjects();
     }
 
 
-    public boolean setEditedObject(Set<OWLNamedIndividual> individuals) {
+    public boolean setEditedObject(Set<OWLIndividual> individuals) {
         panel.setSelection(individuals != null ? individuals : Collections.EMPTY_SET);
         return true;
     }

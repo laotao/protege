@@ -4,6 +4,7 @@ import org.protege.editor.core.ui.RefreshableComponent;
 import org.protege.editor.core.ui.view.DisposableAction;
 import org.protege.editor.owl.model.entity.OWLEntityCreationSet;
 import org.protege.editor.owl.model.hierarchy.IndividualsByTypeHierarchyProvider;
+import org.protege.editor.owl.model.util.HasObjects;
 import org.protege.editor.owl.ui.OWLIcons;
 import org.protege.editor.owl.ui.action.DeleteIndividualAction;
 import org.protege.editor.owl.ui.tree.CountingOWLObjectTreeCellRenderer;
@@ -151,8 +152,8 @@ public class OWLIndividualsByTypeViewComponent extends AbstractOWLSelectionViewC
             }
         } , "A", "A");
         addAction(new DeleteIndividualAction(getOWLEditorKit(),
-                                             new OWLEntitySetProvider<OWLNamedIndividual>() {
-                                                 public Set<OWLNamedIndividual> getEntities() {
+                                             new HasObjects<OWLIndividual>() {
+                                                 public Set<OWLIndividual> getObjects() {
                                                      return getSelectedIndividuals();
                                                  }
                                              }), "B", "A");
@@ -176,7 +177,7 @@ public class OWLIndividualsByTypeViewComponent extends AbstractOWLSelectionViewC
     final protected OWLObject updateView() {
         OWLObject sel = null;
         OWLEntity entity = getOWLWorkspace().getOWLSelectionModel().getSelectedEntity();
-        if (entity instanceof OWLClass || entity instanceof OWLNamedIndividual){
+        if (entity instanceof OWLClass || entity instanceof OWLIndividual){
             sel = updateView(entity);
             if (sel != null) {
                 updateRegisteredActions();
@@ -189,12 +190,12 @@ public class OWLIndividualsByTypeViewComponent extends AbstractOWLSelectionViewC
     }
 
 
-    private Set<OWLNamedIndividual> getSelectedIndividuals(){
+    private Set<OWLIndividual> getSelectedIndividuals(){
         List<OWLObject> sel = tree.getSelectedOWLObjects();
-        Set<OWLNamedIndividual> selIndivs = new HashSet<OWLNamedIndividual>();
+        Set<OWLIndividual> selIndivs = new HashSet<>();
         for (OWLObject obj : sel){
-            if (obj instanceof OWLNamedIndividual){
-                selIndivs.add((OWLNamedIndividual)obj);
+            if (obj instanceof OWLIndividual){
+                selIndivs.add((OWLIndividual)obj);
             }
         }
         return selIndivs;
@@ -227,7 +228,7 @@ public class OWLIndividualsByTypeViewComponent extends AbstractOWLSelectionViewC
     //////// Findable
 
     public List<OWLNamedIndividual> find(String match) {
-        return new ArrayList<OWLNamedIndividual>(getOWLModelManager().getOWLEntityFinder().getMatchingOWLIndividuals(match));
+        return new ArrayList<>(getOWLModelManager().getOWLEntityFinder().getMatchingOWLIndividuals(match));
     }
 
     public void show(OWLNamedIndividual owlEntity) {

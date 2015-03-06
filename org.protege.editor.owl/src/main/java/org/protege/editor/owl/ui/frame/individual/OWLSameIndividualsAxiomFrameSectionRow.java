@@ -6,7 +6,7 @@ import org.protege.editor.owl.ui.editor.OWLObjectEditor;
 import org.protege.editor.owl.ui.frame.AbstractOWLFrameSectionRow;
 import org.protege.editor.owl.ui.frame.OWLFrameSection;
 import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
 
@@ -21,28 +21,28 @@ import java.util.Set;
  * Bio-Health Informatics Group<br>
  * Date: 29-Jan-2007<br><br>
  */
-public class OWLSameIndividualsAxiomFrameSectionRow extends AbstractOWLFrameSectionRow<OWLNamedIndividual, OWLSameIndividualAxiom, Set<OWLNamedIndividual>> {
+public class OWLSameIndividualsAxiomFrameSectionRow extends AbstractOWLFrameSectionRow<OWLIndividual, OWLSameIndividualAxiom, Set<OWLIndividual>> {
 
     public OWLSameIndividualsAxiomFrameSectionRow(OWLEditorKit owlEditorKit, 
-    											  OWLFrameSection<OWLNamedIndividual, OWLSameIndividualAxiom, Set<OWLNamedIndividual>> section,
-                                                  OWLOntology ontology, OWLNamedIndividual rootObject,
+    											  OWLFrameSection<OWLIndividual, OWLSameIndividualAxiom, Set<OWLIndividual>> section,
+                                                  OWLOntology ontology, OWLIndividual rootObject,
                                                   OWLSameIndividualAxiom axiom) {
         super(owlEditorKit, section, ontology, rootObject, axiom);
     }
 
 
-    protected OWLObjectEditor<Set<OWLNamedIndividual>> getObjectEditor() {
+    protected OWLObjectEditor<Set<OWLIndividual>> getObjectEditor() {
         return new OWLIndividualSetEditor(getOWLEditorKit());
     }
     
     @Override
-	public boolean checkEditorResults(OWLObjectEditor<Set<OWLNamedIndividual>> editor) {
-		Set<OWLNamedIndividual> equivalents = editor.getEditedObject();
+	public boolean checkEditorResults(OWLObjectEditor<Set<OWLIndividual>> editor) {
+		Set<OWLIndividual> equivalents = editor.getEditedObject();
 		return !equivalents.contains(getRootObject());
 	}
 
 
-    protected OWLSameIndividualAxiom createAxiom(Set<OWLNamedIndividual> editedObject) {
+    protected OWLSameIndividualAxiom createAxiom(Set<OWLIndividual> editedObject) {
         editedObject.add(getRootObject());
         return getOWLDataFactory().getOWLSameIndividualAxiom(editedObject);
     }
@@ -53,13 +53,12 @@ public class OWLSameIndividualsAxiomFrameSectionRow extends AbstractOWLFrameSect
      * could be placed on the clip board during a copy operation,
      * or navigated to etc.
      */
-    public List<OWLNamedIndividual> getManipulatableObjects() {
-        //@@TODO v3 port - what about anon indivs?
+    public List<OWLIndividual> getManipulatableObjects() {
         Set<OWLIndividual> individuals = getAxiom().getIndividuals();
-        List<OWLNamedIndividual> results = new ArrayList<OWLNamedIndividual>();
+        List<OWLIndividual> results = new ArrayList<OWLIndividual>();
         for (OWLIndividual ind : individuals){
-            if (!ind.isAnonymous() && !ind.equals(getRootObject())){
-                results.add(ind.asOWLNamedIndividual());
+            if (!ind.equals(getRootObject())){
+                results.add(ind);
             }
         }
         return results;

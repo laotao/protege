@@ -3,6 +3,7 @@ package org.protege.editor.owl.ui.view.individual;
 import org.protege.editor.owl.ui.frame.OWLAnnotationsFrame;
 import org.protege.editor.owl.ui.framelist.OWLFrameList;
 import org.semanticweb.owlapi.model.OWLAnnotationSubject;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 
 import javax.swing.*;
@@ -23,7 +24,7 @@ public class OWLIndividualAnnotationsViewComponent extends AbstractOWLIndividual
 
 
     public void initialiseIndividualsView() throws Exception {
-        list = new OWLFrameList<OWLAnnotationSubject>(getOWLEditorKit(), new OWLAnnotationsFrame(getOWLEditorKit()));
+        list = new OWLFrameList<>(getOWLEditorKit(), new OWLAnnotationsFrame(getOWLEditorKit()));
         setLayout(new BorderLayout());
         JScrollPane sp = new JScrollPane(list);
         sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -36,8 +37,17 @@ public class OWLIndividualAnnotationsViewComponent extends AbstractOWLIndividual
     }
 
 
-    public OWLNamedIndividual updateView(OWLNamedIndividual selectedIndividual) {
-        list.setRootObject(selectedIndividual == null ? null : selectedIndividual.getIRI());
+    public OWLIndividual updateView(OWLIndividual selectedIndividual) {
+        list.setRootObject(selectedIndividual == null ? null : getAnnotationSubject(selectedIndividual));
         return selectedIndividual;
+    }
+
+    private OWLAnnotationSubject getAnnotationSubject(OWLIndividual individual) {
+        if(individual.isNamed()) {
+            return individual.asOWLNamedIndividual().getIRI();
+        }
+        else {
+            return individual.asOWLAnonymousIndividual();
+        }
     }
 }

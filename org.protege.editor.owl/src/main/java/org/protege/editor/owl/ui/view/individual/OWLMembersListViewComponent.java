@@ -7,14 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.protege.editor.owl.model.selection.OWLSelectionModelListener;
-import org.semanticweb.owlapi.model.AddAxiom;
-import org.semanticweb.owlapi.model.OWLAxiom;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
+import org.semanticweb.owlapi.model.*;
 
 /**
  * Author: drummond<br>
@@ -56,11 +49,10 @@ public class OWLMembersListViewComponent extends OWLIndividualListViewComponent{
 	protected void refill() {
 		individualsInList.clear();
 		OWLClass cls = getOWLWorkspace().getOWLSelectionModel().getLastSelectedClass();
-		if (cls != null){        
-			Set<OWLIndividual> individuals = cls.getIndividuals(getOntologies());
-			for (OWLIndividual ind : individuals){
-				if (!ind.isAnonymous()){ //TODO: why are anonymous individuals filtered out?
-						individualsInList.add(ind.asOWLNamedIndividual());
+		if (cls != null) {
+			for(OWLOntology ontology : getOntologies()) {
+				for(OWLClassAssertionAxiom ax : ontology.getClassAssertionAxioms(cls)) {
+					individualsInList.add(ax.getIndividual());
 				}
 			}
 			if (cls.equals(getOWLModelManager().getOWLDataFactory().getOWLThing())) {
@@ -72,7 +64,7 @@ public class OWLMembersListViewComponent extends OWLIndividualListViewComponent{
 
 	//TODO: do we want to cache this?
 	protected Set<OWLNamedIndividual> getUntypedIndividuals() {
-		Set<OWLNamedIndividual> untypedIndividuals = new HashSet<OWLNamedIndividual>();
+		Set<OWLNamedIndividual> untypedIndividuals = new HashSet<>();
 		OWLOntology activeOntology = getOWLModelManager().getActiveOntology();
 		Set<OWLOntology> importsClosure = activeOntology.getImportsClosure();
 

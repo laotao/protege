@@ -1,13 +1,20 @@
 package org.protege.editor.owl.ui.action;
 
 import org.protege.editor.owl.OWLEditorKit;
+import org.protege.editor.owl.model.util.HasObjects;
+import org.protege.editor.owl.model.util.OWLObjectRemover;
 import org.protege.editor.owl.ui.OWLIcons;
 import org.protege.editor.owl.ui.view.OWLSelectionViewAction;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyChange;
 import org.semanticweb.owlapi.util.OWLEntityRemover;
 import org.semanticweb.owlapi.util.OWLEntitySetProvider;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -20,10 +27,10 @@ public class DeleteIndividualAction extends OWLSelectionViewAction {
 
     private OWLEditorKit owlEditorKit;
 
-    private OWLEntitySetProvider<OWLNamedIndividual> indSetProvider;
+    private HasObjects<OWLIndividual> indSetProvider;
 
 
-    public DeleteIndividualAction(OWLEditorKit owlEditorKit, OWLEntitySetProvider<OWLNamedIndividual> indSetProvider) {
+    public DeleteIndividualAction(OWLEditorKit owlEditorKit, HasObjects<OWLIndividual> indSetProvider) {
         super("Delete individual(s)", OWLIcons.getIcon("individual.delete.png"));
         this.owlEditorKit = owlEditorKit;
         this.indSetProvider = indSetProvider;
@@ -31,7 +38,7 @@ public class DeleteIndividualAction extends OWLSelectionViewAction {
 
 
     public void updateState() {
-        setEnabled(!indSetProvider.getEntities().isEmpty());
+        setEnabled(!indSetProvider.getObjects().isEmpty());
     }
 
 
@@ -40,11 +47,13 @@ public class DeleteIndividualAction extends OWLSelectionViewAction {
 
 
     public void actionPerformed(ActionEvent e) {
-        OWLEntityRemover remover = new OWLEntityRemover(owlEditorKit.getModelManager().getOWLOntologyManager(),
-                                                        owlEditorKit.getModelManager().getOntologies());
-        for (OWLNamedIndividual ind : indSetProvider.getEntities()) {
-            ind.accept(remover);
+        OWLObjectRemover remover = new OWLObjectRemover();
+        List<OWLOntologyChange> changes = new ArrayList<>();
+        for (OWLIndividual ind : indSetProvider.getObjects()) {
+            for (OWLOntology ontology : owlEditorKit.getOWLModelManager().getOntologies()) {
+                changes.addAll(remover.getChangesToRemoveObject(ind, ontology));
+            }
         }
-        owlEditorKit.getModelManager().applyChanges(remover.getChanges());
+        owlEditorKit.getModelManager().applyChanges(changes);
     }
 }

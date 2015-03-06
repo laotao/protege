@@ -1,6 +1,7 @@
 package org.protege.editor.owl.ui.view.individual;
 
 import org.protege.editor.owl.ui.usage.UsagePanel;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 
 import java.awt.*;
@@ -28,7 +29,7 @@ public class OWLIndividualUsageViewComponent extends AbstractOWLIndividualViewCo
     }
 
 
-    public OWLNamedIndividual updateView(OWLNamedIndividual individual) {
+    public OWLIndividual updateView(OWLIndividual individual) {
         usagePanel.setOWLEntity(individual);
         return individual;
     }

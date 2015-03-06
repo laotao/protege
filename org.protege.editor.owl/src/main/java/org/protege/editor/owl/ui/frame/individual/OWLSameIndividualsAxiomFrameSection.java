@@ -25,12 +25,12 @@ import org.semanticweb.owlapi.model.OWLSameIndividualAxiom;
  * Bio-Health Informatics Group<br>
  * Date: 29-Jan-2007<br><br>
  */
-public class OWLSameIndividualsAxiomFrameSection extends AbstractOWLFrameSection<OWLNamedIndividual, OWLSameIndividualAxiom, Set<OWLNamedIndividual>> {
+public class OWLSameIndividualsAxiomFrameSection extends AbstractOWLFrameSection<OWLIndividual, OWLSameIndividualAxiom, Set<OWLIndividual>> {
 
     public static final String LABEL = "Same Individual As";
 
 
-    public OWLSameIndividualsAxiomFrameSection(OWLEditorKit editorKit, OWLFrame<? extends OWLNamedIndividual> frame) {
+    public OWLSameIndividualsAxiomFrameSection(OWLEditorKit editorKit, OWLFrame<? extends OWLIndividual> frame) {
         super(editorKit, LABEL, LABEL, frame);
     }
 
@@ -57,28 +57,31 @@ public class OWLSameIndividualsAxiomFrameSection extends AbstractOWLFrameSection
             		return;
             	}
     			Set<OWLIndividual> existingSameIndividuals = getCurrentlyDisplayedSameIndividuals();
-    			Set<OWLNamedIndividual> newSameIndividuals = new HashSet<OWLNamedIndividual>();
-    			for (OWLNamedIndividual i : getCurrentReasoner().getSameIndividuals(getRootObject()).getEntities()) {
-    				if (!i.equals(getRootObject()) && !existingSameIndividuals.contains(i)) {
-    					newSameIndividuals.add(i);    					
-    				}
-    			}
-    			if (!newSameIndividuals.isEmpty()) {
-    				newSameIndividuals.add(getRootObject());
-    				addRow(new OWLSameIndividualsAxiomFrameSectionRow(getOWLEditorKit(), 
-    						OWLSameIndividualsAxiomFrameSection.this, 
-    						null, 
-    						getRootObject(),
-    						getOWLDataFactory().getOWLSameIndividualAxiom(newSameIndividuals)
-    				));
-    			}
-    		}
+    			Set<OWLIndividual> newSameIndividuals = new HashSet<>();
+				OWLIndividual rootObject = getRootObject();
+				if (rootObject.isNamed()) {
+					for (OWLIndividual i : getCurrentReasoner().getSameIndividuals(rootObject.asOWLNamedIndividual()).getEntities()) {
+                        if (!i.equals(rootObject) && !existingSameIndividuals.contains(i)) {
+                            newSameIndividuals.add(i);
+                        }
+                    }
+					if (!newSameIndividuals.isEmpty()) {
+                        newSameIndividuals.add(rootObject);
+                        addRow(new OWLSameIndividualsAxiomFrameSectionRow(getOWLEditorKit(),
+                                OWLSameIndividualsAxiomFrameSection.this,
+                                null,
+                                rootObject,
+                                getOWLDataFactory().getOWLSameIndividualAxiom(newSameIndividuals)
+                        ));
+                    }
+				}
+			}
     	});
     }
     
     public Set<OWLIndividual> getCurrentlyDisplayedSameIndividuals() {
 		Set<OWLIndividual> existingSameIndividuals = new HashSet<OWLIndividual>();
-		for (OWLFrameSectionRow<OWLNamedIndividual, OWLSameIndividualAxiom, Set<OWLNamedIndividual>> existingRow : getRows()) {
+		for (OWLFrameSectionRow<OWLIndividual, OWLSameIndividualAxiom, Set<OWLIndividual>> existingRow : getRows()) {
 			OWLSameIndividualAxiom existingAxiom = existingRow.getAxiom();
 			for (OWLIndividual existingSameIndividual : existingAxiom.getIndividuals()) {
 				existingSameIndividuals.add(existingSameIndividual);
@@ -88,20 +91,20 @@ public class OWLSameIndividualsAxiomFrameSection extends AbstractOWLFrameSection
     }
 
 
-    protected OWLSameIndividualAxiom createAxiom(Set<OWLNamedIndividual> object) {
+    protected OWLSameIndividualAxiom createAxiom(Set<OWLIndividual> object) {
         object.add(getRootObject());
         OWLSameIndividualAxiom ax = getOWLDataFactory().getOWLSameIndividualAxiom(object);
         return ax;
     }
 
 
-    public OWLObjectEditor<Set<OWLNamedIndividual>> getObjectEditor() {
+    public OWLObjectEditor<Set<OWLIndividual>> getObjectEditor() {
         return new OWLIndividualSetEditor(getOWLEditorKit());
     }
     
     @Override
-	public boolean checkEditorResults(OWLObjectEditor<Set<OWLNamedIndividual>> editor) {
-		Set<OWLNamedIndividual> equivalents = editor.getEditedObject();
+	public boolean checkEditorResults(OWLObjectEditor<Set<OWLIndividual>> editor) {
+		Set<OWLIndividual> equivalents = editor.getEditedObject();
 		return !equivalents.contains(getRootObject());
 	}
     
@@ -123,7 +126,7 @@ public class OWLSameIndividualsAxiomFrameSection extends AbstractOWLFrameSection
      * @return A comparator if to sort the rows in this section,
      *         or <code>null</code> if the rows shouldn't be sorted.
      */
-    public Comparator<OWLFrameSectionRow<OWLNamedIndividual, OWLSameIndividualAxiom, Set<OWLNamedIndividual>>> getRowComparator() {
+    public Comparator<OWLFrameSectionRow<OWLIndividual, OWLSameIndividualAxiom, Set<OWLIndividual>>> getRowComparator() {
         return null;
     }
 }

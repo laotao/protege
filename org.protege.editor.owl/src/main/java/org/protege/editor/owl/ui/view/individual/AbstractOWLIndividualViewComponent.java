@@ -2,6 +2,7 @@ package org.protege.editor.owl.ui.view.individual;
 
 import org.protege.editor.owl.ui.view.AbstractOWLSelectionViewComponent;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 
 
@@ -37,8 +38,8 @@ public abstract class AbstractOWLIndividualViewComponent extends AbstractOWLSele
     }
 
 
-    final protected OWLEntity updateView() {
-        OWLNamedIndividual selIndividual = updateView(getSelectedOWLIndividual());
+    final protected OWLIndividual updateView() {
+        OWLIndividual selIndividual = updateView(getSelectedOWLIndividual());
         if (selIndividual != null) {
             updateRegisteredActions();
         }
@@ -49,7 +50,7 @@ public abstract class AbstractOWLIndividualViewComponent extends AbstractOWLSele
     }
 
 
-    public abstract OWLNamedIndividual updateView(OWLNamedIndividual individual);
+    public abstract OWLIndividual updateView(OWLIndividual individual);
 
 
     public abstract void initialiseIndividualsView() throws Exception;

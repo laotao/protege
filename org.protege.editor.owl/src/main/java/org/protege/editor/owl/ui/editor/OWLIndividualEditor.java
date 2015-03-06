@@ -2,6 +2,7 @@ package org.protege.editor.owl.ui.editor;
 
 import org.protege.editor.owl.OWLEditorKit;
 import org.protege.editor.owl.ui.selector.OWLIndividualSelectorPanel;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 
 import javax.swing.*;
@@ -14,7 +15,7 @@ import java.util.Set;
  * Date: 09-Feb-2007<br>
  * <br>
  */
-public class OWLIndividualEditor extends AbstractOWLObjectEditor<OWLNamedIndividual> {
+public class OWLIndividualEditor extends AbstractOWLObjectEditor<OWLIndividual> {
 
     private OWLIndividualSelectorPanel selectorPanel;
 
@@ -41,7 +42,7 @@ public class OWLIndividualEditor extends AbstractOWLObjectEditor<OWLNamedIndivid
 
 
     public boolean canEdit(Object object) {
-        return object instanceof OWLNamedIndividual;
+        return object instanceof OWLIndividual;
     }
 
 
@@ -55,17 +56,17 @@ public class OWLIndividualEditor extends AbstractOWLObjectEditor<OWLNamedIndivid
 	}
 
 
-	public OWLNamedIndividual getEditedObject() {
+	public OWLIndividual getEditedObject() {
 		return selectorPanel.getSelectedObject();
 	}
 
 
-    public Set<OWLNamedIndividual> getEditedObjects() {
+    public Set<OWLIndividual> getEditedObjects() {
 		return selectorPanel.getSelectedObjects();
 	}
 
 
-    public boolean setEditedObject(OWLNamedIndividual editedObject) {
+    public boolean setEditedObject(OWLIndividual editedObject) {
         selectorPanel.setSelection(editedObject);
         return true;
     }

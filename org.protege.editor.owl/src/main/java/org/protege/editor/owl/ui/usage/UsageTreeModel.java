@@ -1,6 +1,8 @@
 package org.protege.editor.owl.ui.usage;
 
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLObject;
+import org.semanticweb.owlapi.model.OWLPrimitive;
 
 import javax.swing.tree.TreeModel;
 import java.util.Set;
@@ -20,7 +22,7 @@ import java.util.Set;
  */
 public interface UsageTreeModel extends TreeModel {
 
-    void setOWLEntity(OWLEntity owlEntity);
+    void setOWLEntity(OWLObject owlEntity);
 
     void addFilter(UsageFilter filter);
 

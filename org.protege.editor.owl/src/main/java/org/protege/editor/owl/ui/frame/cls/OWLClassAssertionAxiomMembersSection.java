@@ -35,7 +35,7 @@ import org.semanticweb.owlapi.reasoner.NodeSet;
  * Date: 27-Jan-2007<br>
  * <br>
  */
-public class OWLClassAssertionAxiomMembersSection extends AbstractOWLClassAxiomFrameSection<OWLClassAssertionAxiom, OWLNamedIndividual> {
+public class OWLClassAssertionAxiomMembersSection extends AbstractOWLClassAxiomFrameSection<OWLClassAssertionAxiom, OWLIndividual> {
 
     public static final String LABEL = "Instances";
 
@@ -88,7 +88,7 @@ public class OWLClassAssertionAxiomMembersSection extends AbstractOWLClassAxiomF
                     NodeSet<OWLNamedIndividual> instances = getOWLModelManager().getReasoner().getInstances(getRootObject(), SHOW_DIRECT_INSTANCES);
                     if (instances != null) {
                         for (OWLIndividual ind : instances.getFlattened()) {
-                            if (!ind.isAnonymous() && !added.contains(ind.asOWLNamedIndividual())) {
+                            if (added.contains(ind)) {
                                 addRow(new OWLClassAssertionAxiomMembersSectionRow(getOWLEditorKit(),
                                                                                    OWLClassAssertionAxiomMembersSection.this,
                                                                                    null,
@@ -103,12 +103,12 @@ public class OWLClassAssertionAxiomMembersSection extends AbstractOWLClassAxiomF
     }
 
 
-    protected OWLClassAssertionAxiom createAxiom(OWLNamedIndividual individual) {
+    protected OWLClassAssertionAxiom createAxiom(OWLIndividual individual) {
 		return getOWLDataFactory().getOWLClassAssertionAxiom(getRootObject(), individual);
 	}
 
 
-    public OWLObjectEditor<OWLNamedIndividual> getObjectEditor() {
+    public OWLObjectEditor<OWLIndividual> getObjectEditor() {
 		return new OWLIndividualEditor(getOWLEditorKit(), ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	}
 
@@ -143,10 +143,10 @@ public class OWLClassAssertionAxiomMembersSection extends AbstractOWLClassAxiomF
 	 * @return A comparator if to sort the rows in this section, or
 	 *         <code>null</code> if the rows shouldn't be sorted.
 	 */
-	public Comparator<OWLFrameSectionRow<OWLClassExpression, OWLClassAssertionAxiom, OWLNamedIndividual>> getRowComparator() {
-		return new Comparator<OWLFrameSectionRow<OWLClassExpression, OWLClassAssertionAxiom, OWLNamedIndividual>>() {
-			public int compare(OWLFrameSectionRow<OWLClassExpression, OWLClassAssertionAxiom, OWLNamedIndividual> o1,
-					           OWLFrameSectionRow<OWLClassExpression, OWLClassAssertionAxiom, OWLNamedIndividual> o2) {
+	public Comparator<OWLFrameSectionRow<OWLClassExpression, OWLClassAssertionAxiom, OWLIndividual>> getRowComparator() {
+		return new Comparator<OWLFrameSectionRow<OWLClassExpression, OWLClassAssertionAxiom, OWLIndividual>>() {
+			public int compare(OWLFrameSectionRow<OWLClassExpression, OWLClassAssertionAxiom, OWLIndividual> o1,
+					           OWLFrameSectionRow<OWLClassExpression, OWLClassAssertionAxiom, OWLIndividual> o2) {
                 final String s1 = getOWLModelManager().getRendering(o1.getAxiom().getIndividual());
                 final String s2 = getOWLModelManager().getRendering(o2.getAxiom().getIndividual());
                 return s1.compareToIgnoreCase(s2);

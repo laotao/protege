@@ -6,6 +6,7 @@ import org.protege.editor.owl.model.entity.OWLEntityCreationSet;
 import org.protege.editor.owl.model.event.EventType;
 import org.protege.editor.owl.model.event.OWLModelManagerChangeEvent;
 import org.protege.editor.owl.model.event.OWLModelManagerListener;
+import org.protege.editor.owl.model.util.HasObjects;
 import org.protege.editor.owl.ui.OWLIcons;
 import org.protege.editor.owl.ui.action.DeleteIndividualAction;
 import org.protege.editor.owl.ui.list.OWLObjectList;
@@ -45,14 +46,14 @@ public class OWLIndividualListViewComponent extends AbstractOWLIndividualViewCom
      * 
      */
     private static final long serialVersionUID = -1519269944342726754L;
-    private OWLObjectList<OWLNamedIndividual> list;
+    private OWLObjectList<OWLIndividual> list;
     private OWLOntologyChangeListener listener;
     private ChangeListenerMediator changeListenerMediator;
     private OWLModelManagerListener modelManagerListener;
     private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
     private boolean selectionChangedByUser = true;
 
-    protected Set<OWLNamedIndividual> individualsInList;
+    protected Set<OWLIndividual> individualsInList;
 
     private ListSelectionListener listSelectionListener = new ListSelectionListener() {
         public void valueChanged(ListSelectionEvent e) {
@@ -103,8 +104,8 @@ public class OWLIndividualListViewComponent extends AbstractOWLIndividualViewCom
     protected void setupActions() {
         addAction(new AddIndividualAction(), "A", "A");
         addAction(new DeleteIndividualAction(getOWLEditorKit(),
-                                             new OWLEntitySetProvider<OWLNamedIndividual>() {
-                                                 public Set<OWLNamedIndividual> getEntities() {
+                                             new HasObjects<OWLIndividual>() {
+                                                 public Set<OWLIndividual> getObjects() {
                                                      return getSelectedIndividuals();
                                                  }
                                              }), "B", "A");
@@ -121,6 +122,7 @@ public class OWLIndividualListViewComponent extends AbstractOWLIndividualViewCom
         individualsInList.clear();
         for (OWLOntology ont : getOntologies()) {
             individualsInList.addAll(ont.getIndividualsInSignature());
+            individualsInList.addAll(ont.getReferencedAnonymousIndividuals());
         }
         reset();
     }
@@ -137,7 +139,7 @@ public class OWLIndividualListViewComponent extends AbstractOWLIndividualViewCom
 
 
     protected void reset() {
-        OWLNamedIndividual[] objects = individualsInList.toArray(new OWLNamedIndividual[individualsInList.size()]);
+        OWLIndividual [] objects = individualsInList.toArray(new OWLIndividual[individualsInList.size()]);
         list.setListData(objects);
         OWLNamedIndividual individual = getSelectedOWLIndividual();
         selectionChangedByUser = false;
@@ -149,7 +151,7 @@ public class OWLIndividualListViewComponent extends AbstractOWLIndividualViewCom
         }
     }
 
-    public OWLNamedIndividual updateView(OWLNamedIndividual selelectedIndividual) {
+    public OWLIndividual updateView(OWLIndividual selelectedIndividual) {
         if (!isPinned()) {
             list.setSelectedValue(selelectedIndividual, true);
         }
@@ -161,11 +163,11 @@ public class OWLIndividualListViewComponent extends AbstractOWLIndividualViewCom
         getOWLModelManager().removeListener(modelManagerListener);
     }
 
-    public OWLNamedIndividual getSelectedIndividual() {
+    public OWLIndividual getSelectedIndividual() {
         return list.getSelectedValue();
     }
 
-    public Set<OWLNamedIndividual> getSelectedIndividuals() {
+    public Set<OWLIndividual> getSelectedIndividuals() {
         return new LinkedHashSet<>(list.getSelectedValuesList());
     }
 
@@ -243,7 +245,7 @@ public class OWLIndividualListViewComponent extends AbstractOWLIndividualViewCom
     }
 
 
-    public void setSelectedIndividuals(Set<OWLNamedIndividual> individuals) {
+    public void setSelectedIndividuals(Set<OWLIndividual> individuals) {
         list.setSelectedValues(individuals, true);
     }
 
@@ -275,12 +277,36 @@ public class OWLIndividualListViewComponent extends AbstractOWLIndividualViewCom
     }
 
     public void handleDelete() {
-        OWLEntityRemover entityRemover = new OWLEntityRemover(getOWLModelManager().getOWLOntologyManager(),
-                                                              getOWLModelManager().getOntologies());
-        for (OWLNamedIndividual ind : getSelectedIndividuals()) {
-            ind.accept(entityRemover);
+        List<OWLOntologyChange> changes = new ArrayList<>();
+        for (OWLIndividual ind : getSelectedIndividuals()) {
+            for(OWLOntology ont : getOWLModelManager().getOntologies()) {
+                if(ind.isNamed()) {
+                    OWLNamedIndividual namedIndividual = ind.asOWLNamedIndividual();
+                    for(OWLAxiom ax : ont.getReferencingAxioms(namedIndividual)) {
+                        changes.add(new RemoveAxiom(ont, ax));
+                    }
+                    for(OWLAnnotationAssertionAxiom ax : ont.getAnnotationAssertionAxioms(namedIndividual.getIRI())) {
+                        changes.add(new RemoveAxiom(ont, ax));
+                    }
+                }
+                else {
+                    OWLAnonymousIndividual anonymousIndividual = ind.asOWLAnonymousIndividual();
+                    for(OWLAxiom ax : ont.getReferencingAxioms(anonymousIndividual)) {
+                        changes.add(new RemoveAxiom(ont, ax));
+                    }
+                    for(OWLAnnotationAssertionAxiom ax : ont.getAnnotationAssertionAxioms(anonymousIndividual)) {
+                        changes.add(new RemoveAxiom(ont, ax));
+                    }
+                }
+
+                for(OWLAnnotationAssertionAxiom ax : ont.getAxioms(AxiomType.ANNOTATION_ASSERTION)) {
+                    if(ax.getValue().equals(ind)) {
+                        changes.add(new RemoveAxiom(ont, ax));
+                    }
+                }
+            }
         }
-        getOWLModelManager().applyChanges(entityRemover.getChanges());
+        getOWLModelManager().applyChanges(changes);
     }
 
     public boolean canDelete() {

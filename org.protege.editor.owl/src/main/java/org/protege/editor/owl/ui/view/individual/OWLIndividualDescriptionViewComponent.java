@@ -3,6 +3,7 @@ package org.protege.editor.owl.ui.view.individual;
 import org.protege.editor.owl.ui.frame.individual.OWLIndividualFrame;
 import org.protege.editor.owl.ui.framelist.CreateNewEquivalentClassAction;
 import org.protege.editor.owl.ui.framelist.OWLFrameList;
+import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
 
 import javax.swing.*;
@@ -21,14 +22,14 @@ public class OWLIndividualDescriptionViewComponent extends AbstractOWLIndividual
      * 
      */
     private static final long serialVersionUID = -9201605931160593993L;
-    private OWLFrameList<OWLNamedIndividual> list;
+    private OWLFrameList<OWLIndividual> list;
 
 
     public void initialiseIndividualsView() throws Exception {
-        list = new OWLFrameList<OWLNamedIndividual>(getOWLEditorKit(), new OWLIndividualFrame(getOWLEditorKit()));
+        list = new OWLFrameList<>(getOWLEditorKit(), new OWLIndividualFrame(getOWLEditorKit()));
         setLayout(new BorderLayout());
         add(new JScrollPane(list));
-        list.addToPopupMenu(new CreateNewEquivalentClassAction<OWLNamedIndividual>());
+        list.addToPopupMenu(new CreateNewEquivalentClassAction<OWLIndividual>());
     }
 
 
@@ -37,7 +38,7 @@ public class OWLIndividualDescriptionViewComponent extends AbstractOWLIndividual
     }
 
 
-    public OWLNamedIndividual updateView(OWLNamedIndividual selelectedIndividual) {
+    public OWLIndividual updateView(OWLIndividual selelectedIndividual) {
         list.setRootObject(selelectedIndividual);
         return selelectedIndividual;
     }

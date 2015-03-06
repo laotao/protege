@@ -1,10 +1,7 @@
 package org.protege.editor.owl.ui.usage;
 
 import org.protege.editor.owl.OWLEditorKit;
-import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLEntity;
-import org.semanticweb.owlapi.model.OWLIndividual;
-import org.semanticweb.owlapi.model.OWLProperty;
+import org.semanticweb.owlapi.model.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,7 +30,7 @@ public class UsagePanel extends JPanel {
     private JCheckBox showDifferentCheckbox;
     private JCheckBox showNamedSubSuperclassesCheckbox;
 
-    private OWLEntity currentSelection;
+    private OWLObject currentSelection;
 
     public UsagePanel(OWLEditorKit owlEditorKit) {
         setLayout(new BorderLayout());
@@ -84,7 +81,7 @@ public class UsagePanel extends JPanel {
     }
 
 
-    public void setOWLEntity(OWLEntity entity) {
+    public void setOWLEntity(OWLObject entity) {
         currentSelection = entity;
         showNamedSubSuperclassesCheckbox.setVisible(entity != null && entity instanceof OWLClass);
         showDisjointsCheckbox.setVisible(entity != null && (entity instanceof OWLProperty || entity instanceof OWLClass));

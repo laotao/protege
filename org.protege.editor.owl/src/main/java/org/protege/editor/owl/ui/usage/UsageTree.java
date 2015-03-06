@@ -5,6 +5,7 @@ import org.protege.editor.owl.ui.renderer.OWLCellRenderer;
 import org.protege.editor.owl.ui.tree.OWLLinkedObjectTree;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLObject;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -26,7 +27,7 @@ public class UsageTree extends OWLLinkedObjectTree {
 
     private OWLEditorKit owlEditorKit;
 
-    private OWLEntity entity;
+    private OWLObject object;
 
 
     public UsageTree(OWLEditorKit owlEditorKit) {
@@ -36,8 +37,8 @@ public class UsageTree extends OWLLinkedObjectTree {
     }
 
 
-    public void setOWLEntity(OWLEntity entity) {
-        this.entity = entity;
+    public void setOWLEntity(OWLObject entity) {
+        this.object = entity;
 
         final UsagePreferences p = UsagePreferences.getInstance();
         final UsageTreeModel model = new UsageByEntityTreeModel(owlEditorKit);
@@ -65,7 +66,9 @@ public class UsageTree extends OWLLinkedObjectTree {
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
                                                       boolean leaf, int row, boolean hasFocus) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-            setFocusedEntity(entity);
+            if (object instanceof OWLEntity) {
+                setFocusedEntity((OWLEntity) object);
+            }
             JComponent c = (JComponent) super.getTreeCellRendererComponent(tree,
                                                                            node.getUserObject(),
                                                                            sel,
