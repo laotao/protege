@@ -69,7 +69,8 @@ public class OWLRendererPreferences {
      * at small sizes on computer screens.  See http://en.wikipedia.org/wiki/Verdana for details.  This font will not
      * be used if is not available on the system.
      */
-    public static final String DEFAULT_PREFERRED_PHYSICAL_FONT_FAMILY_NAME = "Verdana";
+    //"Verdana" only works for Latin, Greek and Cyrillic. To render Chinese, we need "SimSum".
+    public static final String DEFAULT_PREFERRED_PHYSICAL_FONT_FAMILY_NAME = "SimSun"; //"Verdana";
     
     public static final String DEFAULT_FONT_NAME = getDefaultFontName();
 
